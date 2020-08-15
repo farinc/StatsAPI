@@ -12,9 +12,9 @@ import net.minecraft.nbt.INBT;
  * 
  * @param <T> The serialization type.
  */
-public interface IInstance<T extends INBT> {
+public interface IInstance {
     
-    public T writeNBT();
+    public INBT writeNBT();
 
-    public void readNBT(T nbt);
+    public void readNBT(INBT nbt);
 }

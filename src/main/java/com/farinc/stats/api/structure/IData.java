@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.nbt.INBT;
+
 /**
  * Represents the original data from some source. In this case, data is pulled from 1) the stats.json
  * and 2) the server to client registry packet that effectively copies the data the server has loaded
@@ -12,11 +14,11 @@ import com.google.gson.JsonObject;
  * 
  * @param <T> The {@code IInstance} that corresponds with this {@code IData}
  */
-public interface IData<T extends IInstance<?>> extends Supplier<T> {
+public interface IData<T extends IInstance> extends Supplier<T> {
 
-    public Object writeData();
+    public INBT writeData();
 
-    public void readData(Object data);
+    public void readData(INBT data);
 
     public void readData(JsonObject data);
     

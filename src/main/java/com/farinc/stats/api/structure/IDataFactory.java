@@ -10,4 +10,4 @@ import java.util.function.Supplier;
  * @param <I> The IInstance type
  * @param <D> The IData type
  */
-public interface IDataFactory<I extends IInstance<?>, D extends IData<I>> extends Supplier<D> {}
+public interface IDataFactory<I extends IInstance, D extends IData<I>> extends Supplier<D> {}

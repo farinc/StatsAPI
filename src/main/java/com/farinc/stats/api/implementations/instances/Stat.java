@@ -2,9 +2,7 @@ package com.farinc.stats.api.implementations.instances;
 
 import com.farinc.stats.api.structure.IInstance;
 
-import net.minecraft.nbt.INBT;
-
-public abstract class Stat<T extends INBT> implements IInstance<T> {
+public abstract class Stat implements IInstance {
 
     /**
      * The current level of this stat
@@ -14,7 +12,7 @@ public abstract class Stat<T extends INBT> implements IInstance<T> {
     /**
      * The components of this stat
      */
-    private final Component<?>[][] components;
+    private final Component[][] components;
 
     /**
      * The basic constructor of a stat. Data passed here should be from the
@@ -25,7 +23,7 @@ public abstract class Stat<T extends INBT> implements IInstance<T> {
      *                   by this stats corresponding {@code StatData}
      *                   implementation.
      */
-    public Stat(Component<?>[][] components) {
+    public Stat(Component[][] components) {
         this.components = components;
 
         //Start this stat at level zero
@@ -40,11 +38,11 @@ public abstract class Stat<T extends INBT> implements IInstance<T> {
         return this.components.length;
     }
 
-    public Component<?>[][] getComponents() {
+    public Component[][] getComponents() {
         return components;
     }
 
-    public Component<?>[] getNextLevelComponents(){
+    public Component[] getNextLevelComponents(){
         if(this.level < this.getMaxLevel()){
             return this.components[this.level + 1];
         }
