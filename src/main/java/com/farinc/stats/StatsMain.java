@@ -1,6 +1,9 @@
 package com.farinc.stats;
 
-import com.farinc.stats.api.implementations.dataholder.StatDataStorage;
+import com.farinc.stats.main.proxies.CommonProxy;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.fml.common.Mod;
 
@@ -9,6 +12,5 @@ public class StatsMain {
     
     public static final String MODID = "statsapi";
 
-    public static final StatDataStorage DATA_STORAGE = new StatDataStorage();
-
+    public static final Logger LOGGER = LogManager.getLogger();
 }

@@ -39,37 +39,40 @@ public class StatsAPI {
             return ele != null && ele.isJsonPrimitive() && ((JsonPrimitive) ele).isNumber();
         }
 
-        public static Integer isInteger(JsonElement ele){
+        public static boolean isInteger(JsonElement ele){
             if(isNumber(ele)){
                 try {
-                    return ele.getAsInt();
+                    ele.getAsInt();
+                    return true;
                 } catch (ClassCastException | IllegalStateException e) {
                     jsonLoaderLogger.catching(Level.DEBUG, e);
                 }
             }
-            return null;
+            return false;
         }
 
-        public static Float isFloat(JsonElement ele){
+        public static boolean isFloat(JsonElement ele){
             if(isNumber(ele)){
                 try {
-                    return ele.getAsFloat();
+                    ele.getAsFloat();
+                    return true;
                 } catch (ClassCastException | IllegalStateException e) {
                     jsonLoaderLogger.catching(Level.DEBUG, e);
                 }
             }
-            return null;
+            return false;
         }
 
-        public static Double isDouble(JsonElement ele){
+        public static boolean isDouble(JsonElement ele){
             if(isNumber(ele)){
                 try {
-                    return ele.getAsDouble();
+                    ele.getAsDouble();
+                    return true;
                 } catch (ClassCastException | IllegalStateException e) {
                     jsonLoaderLogger.catching(Level.DEBUG, e);
                 }
             }
-            return null;
+            return false;
         }
     }
 }

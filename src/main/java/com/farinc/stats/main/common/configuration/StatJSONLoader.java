@@ -10,6 +10,7 @@ import com.farinc.stats.api.StatsAPI;
 import com.farinc.stats.api.StatsAPI.JsonUtils;
 import com.farinc.stats.api.implementations.data.ComponentData;
 import com.farinc.stats.api.implementations.data.StatData;
+import com.farinc.stats.main.proxies.CommonProxy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +23,8 @@ import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 /**
@@ -29,16 +32,13 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
  * will switch to a datapack. However, due to the limited scope of the system,
  * this will suffice for now.
  */
+@EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = StatsMain.MODID)
 public class StatJSONLoader {
 
     public final static Logger LOGGER = LogManager.getLogger();
 
     static {
         StatsAPI.JsonUtils.jsonLoaderLogger = LOGGER; //passes a reference to the api.
-    }
-
-    public void register() {
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static class StatJsonSyntaxException extends Exception {
@@ -51,21 +51,23 @@ public class StatJSONLoader {
     }
 
     @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public static void onServerStarting(FMLServerStartingEvent event) {
+
+        StatsMain.LOGGER.info("-------- Beginning JSON Loading --------");
 
         if(event.getPhase() == EventPriority.NORMAL){
 
             File statJSON = event.getServer().getFile(String.format("config%splayer-stats%sstats.json", File.separator, File.separator));
             try {
                 JsonObject statData = JSONUtils.fromJson(new FileReader(statJSON.getCanonicalFile()));
-                this.parseStatData(statData);
+                parseStatData(statData);
             } catch (StatJsonSyntaxException | IOException e) {
                 LOGGER.catching(Level.ERROR, e);
             }
         }
     }
 
-    private ComponentData<?> parseComponent(JsonObject component) throws StatJsonSyntaxException{
+    private static ComponentData<?> parseComponent(JsonObject component) throws StatJsonSyntaxException{
         JsonElement element0 = component.get("componentID");
         
         if(JsonUtils.isString(element0)) {
@@ -89,14 +91,14 @@ public class StatJSONLoader {
         }
     }
 
-    private void parseStat(JsonObject statJsonData) throws StatJsonSyntaxException {
+    private static void parseStat(JsonObject statJsonData) throws StatJsonSyntaxException {
         JsonElement element00 = statJsonData.get("statID");
 
         if(JsonUtils.isString(element00)){
             String statID = element00.getAsString();
 
             //Check the registry if this statID even exists and that it hasn't already been processed
-            if(Registry.statExists(statID) && !StatsMain.DATA_STORAGE.statExists(statID)){
+            if(Registry.statExists(statID) && !CommonProxy.DATA_STORAGE.statExists(statID)){
                 StatData<?> statData = Registry.getStatDataFactory(statID).get();
                 JsonElement element0 = statJsonData.get("components");
 
@@ -152,7 +154,7 @@ public class StatJSONLoader {
                 }
 
                 //add it to the runtime storage
-                StatsMain.DATA_STORAGE.setData(statID, statData);
+                CommonProxy.DATA_STORAGE.setData(statID, statData);
 
             }else{
                 throw new StatJsonSyntaxException("the statID specified is not a known stat or has already been processed!");
@@ -162,7 +164,7 @@ public class StatJSONLoader {
         }
     }
 
-    private void parseStatData(JsonObject json) throws StatJsonSyntaxException {
+    private static void parseStatData(JsonObject json) throws StatJsonSyntaxException {
         JsonElement element01 = json.get("version");
         if(JsonUtils.isNumber(element01)){
             float version = element01.getAsFloat();
@@ -178,7 +180,7 @@ public class StatJSONLoader {
             //So here we literate over each json stat object, this contains the id and components
             for(JsonElement element : statsDataArray) {
                 if(JsonUtils.isJsonObject(element)) {
-                    this.parseStat(element.getAsJsonObject());
+                    parseStat(element.getAsJsonObject());
                 }else{
                     throw new StatJsonSyntaxException("the stats array contains a non-object value, which cannot be a stat object!");
                 }

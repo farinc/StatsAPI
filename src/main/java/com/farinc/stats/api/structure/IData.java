@@ -2,6 +2,7 @@ package com.farinc.stats.api.structure;
 
 import java.util.function.Supplier;
 
+import com.farinc.stats.main.common.configuration.StatJSONLoader.StatJsonSyntaxException;
 import com.google.gson.JsonObject;
 
 import net.minecraft.nbt.INBT;
@@ -20,6 +21,6 @@ public interface IData<T extends IInstance> extends Supplier<T> {
 
     public void readData(INBT data);
 
-    public void readData(JsonObject data);
+    public void readData(JsonObject data) throws StatJsonSyntaxException;
     
 }
