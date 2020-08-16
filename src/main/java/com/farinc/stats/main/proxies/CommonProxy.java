@@ -2,6 +2,7 @@ package com.farinc.stats.main.proxies;
 
 import com.farinc.stats.StatsMain;
 import com.farinc.stats.api.implementations.dataholder.StatDataStorage;
+import com.farinc.stats.main.common.capabilities.PlayerStatCapability;
 import com.farinc.stats.main.common.configuration.StatJSONLoader;
 
 import org.apache.logging.log4j.LogManager;
