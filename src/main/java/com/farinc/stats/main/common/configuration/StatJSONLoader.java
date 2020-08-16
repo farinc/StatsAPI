@@ -74,10 +74,12 @@ public class StatJSONLoader {
             String componentID = element0.getAsString();
 
             if(Registry.componentExists(componentID)){
+                LOGGER.debug(String.format("Parsing component \"%s\"...", componentID));
                 ComponentData<?> componentData = Registry.getComponentDataFactory(componentID).get();
                 
                 JsonElement element1 = component.get("data");
                 if(JsonUtils.isJsonObject(element1)){
+                    LOGGER.debug(String.format("Reading data for component \"%s\"...", componentID));
                     componentData.readData(element1.getAsJsonObject());
                     return componentData;
                 }else{
@@ -131,6 +133,7 @@ public class StatJSONLoader {
                                 next++;
                             }
 
+                            LOGGER.debug(String.format("For stat \"%s\", at level %d there where %d components", statID, level, componentsPerLevelArray.size()));
                             //thus the sub array are the components per level.
                             components[level] = componentsPerLevel;
                         }else{
@@ -143,14 +146,17 @@ public class StatJSONLoader {
                     statData.setComponentData(components);
 
                 }else{
-                    throw new StatJsonSyntaxException("the stat does not have a \"components\" member that is a array");
+                    throw new StatJsonSyntaxException(String.format("the stat \"%s\" does not have a \"components\" member that is a array",statID));
                 }
 
                 //extract properties 
                 
-                JsonElement element3 = statJsonData.get("properties");
+                JsonElement element3 = statJsonData.get("data");
                 if(JsonUtils.isJsonObject(element3)){
+                    LOGGER.debug(String.format("Reading data of stat \"%s\"", statID));
                     statData.readData(element3.getAsJsonObject());
+                }else{
+                    throw new StatJsonSyntaxException(String.format("no data member exits for stat \"%s\"!", statID));
                 }
 
                 //add it to the runtime storage
@@ -168,7 +174,7 @@ public class StatJSONLoader {
         JsonElement element01 = json.get("version");
         if(JsonUtils.isNumber(element01)){
             float version = element01.getAsFloat();
-            LOGGER.info("Loaded stats.json file with version %f", version);
+            LOGGER.info(String.format("Loaded stats.json file with version %f", version));
         }else{
             LOGGER.warn("There was no version member in the stats.json. While not required, consider if this stats.json is up to date!");
         }
