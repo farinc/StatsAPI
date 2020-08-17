@@ -44,24 +44,19 @@ public abstract class Stat implements IInstance {
         return components;
     }
 
-    public Component[] getNextLevelComponents(){
-        if(this.level < this.getMaxLevel()){
-            return this.components[this.level + 1];
-        }
-        return null;
+    /**
+     * Give the components required to achieve the upgrade to the next level. Effectively,
+     * to get from level 0 to level 1, you must complete all level 0 components before your
+     * stat becomes level 2.
+     * @return the components required to complete
+     */
+    public Component[] getUpgradeComponents(){
+        return this.components[this.level];
     }
 
     public void setLevel(int level) {
         if(level <= this.getMaxLevel() && level >= 0){
             this.level = level;
-        }
-    }
-
-    @Override
-    public void update(PlayerEntity player){
-        Component[] componentsAtCurrentLevel = this.getComponents()[this.level];
-        for(Component component : componentsAtCurrentLevel){
-            component.update(player);
         }
     }
 }
