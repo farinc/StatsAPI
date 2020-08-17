@@ -4,17 +4,16 @@ import com.farinc.stats.StatsMain;
 import com.farinc.stats.api.implementations.dataholder.StatDataStorage;
 import com.farinc.stats.main.common.capabilities.PlayerStatCapability;
 import com.farinc.stats.main.common.configuration.StatJSONLoader;
+import com.farinc.stats.main.common.handlers.PlayerStatHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -30,10 +29,9 @@ public class CommonProxy {
     public static final StatJSONLoader JSON_LOADER = new StatJSONLoader(); 
 
     @SubscribeEvent
-    public static void setup(FMLCommonSetupEvent event){}
-
-    static {
+    public static void setup(FMLCommonSetupEvent event){
         MinecraftForge.EVENT_BUS.register(ForgeBusHandler.class);
+        MinecraftForge.EVENT_BUS.register(new PlayerStatHandler(20));
     }
 
     public static class ForgeBusHandler {
