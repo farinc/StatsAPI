@@ -13,6 +13,7 @@ import com.farinc.stats.test.factories.TestComponentDataFactory;
 import com.farinc.stats.test.factories.TestStatDataFactory;
 import com.farinc.stats.test.instances.TestComponent;
 import com.farinc.stats.test.instances.TestStat;
+import com.farinc.stats.test.item.TestDataStorageItem;
 import com.farinc.stats.test.item.TestStatItem;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,6 +56,7 @@ public class CommonProxy {
     @SubscribeEvent
     public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
         event.getRegistry().register(new TestStatItem());
+        event.getRegistry().register(new TestDataStorageItem());
     }
 
     public static class ForgeBusHandler {

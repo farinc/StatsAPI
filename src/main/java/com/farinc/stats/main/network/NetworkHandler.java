@@ -30,6 +30,7 @@ public class NetworkHandler {
 
     public static void registerPackets(){
         register(SPacketDataStorageSync.class, SPacketDataStorageSync::encode, SPacketDataStorageSync::decode, SPacketDataStorageSync::handle);
+        register(SPacketTest.class, SPacketTest::encode, SPacketTest::decode, SPacketTest::handle);
     }
 
 
