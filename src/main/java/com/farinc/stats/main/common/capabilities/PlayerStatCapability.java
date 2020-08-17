@@ -31,6 +31,8 @@ public class PlayerStatCapability implements ICapabilitySerializable<CompoundNBT
         public void removeStat(String statID);
 
         public Set<Entry<String, Stat>> getHeldStats();
+
+        public Stat getStat(String statID);
     }
 
     public static class PlayerStatHolder implements IStatHolder {
@@ -54,6 +56,10 @@ public class PlayerStatCapability implements ICapabilitySerializable<CompoundNBT
             return this.stats.entrySet();
         }
 
+        @Override
+        public Stat getStat(String statID) {
+            return this.stats.get(statID);
+        }
     }
 
     public static class PlayerStatHolderStorage implements IStorage<IStatHolder> {
