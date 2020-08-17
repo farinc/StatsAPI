@@ -55,4 +55,7 @@ public class StatDataStorage implements IDataStorage<StatData<?>, String, Compou
         return this.data.containsKey(key);
     }
     
+    public int getDataSize(){
+        return this.data.size();
+    }
 }
