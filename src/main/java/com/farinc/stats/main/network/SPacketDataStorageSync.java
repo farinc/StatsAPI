@@ -30,5 +30,6 @@ public class SPacketDataStorageSync {
         ctx.get().enqueueWork(() -> {
             CommonProxy.DATA_STORAGE.deserializeNBT(packet.tag);
         });
+        ctx.get().setPacketHandled(true);
     }
 }
