@@ -1,7 +1,5 @@
 package com.farinc.stats;
 
-import com.farinc.stats.main.proxies.CommonProxy;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

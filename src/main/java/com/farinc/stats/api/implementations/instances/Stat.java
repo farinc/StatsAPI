@@ -2,8 +2,6 @@ package com.farinc.stats.api.implementations.instances;
 
 import com.farinc.stats.api.structure.IInstance;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 public abstract class Stat implements IInstance {
 
     /**
