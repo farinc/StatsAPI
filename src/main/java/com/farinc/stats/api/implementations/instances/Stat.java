@@ -2,6 +2,8 @@ package com.farinc.stats.api.implementations.instances;
 
 import com.farinc.stats.api.structure.IInstance;
 
+import net.minecraft.entity.player.PlayerEntity;
+
 public abstract class Stat implements IInstance {
 
     /**
@@ -54,6 +56,12 @@ public abstract class Stat implements IInstance {
             this.level = level;
         }
     }
-    
-    
+
+    @Override
+    public void update(PlayerEntity player){
+        Component[] componentsAtCurrentLevel = this.getComponents()[this.level];
+        for(Component component : componentsAtCurrentLevel){
+            component.update(player);
+        }
+    }
 }

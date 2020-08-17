@@ -1,5 +1,6 @@
 package com.farinc.stats.api.structure;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 
 /**
@@ -17,4 +18,8 @@ public interface IInstance {
     public INBT writeNBT();
 
     public void readNBT(INBT nbt);
+
+    public boolean isTickable();
+
+    public void update(PlayerEntity player);
 }
