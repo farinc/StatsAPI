@@ -76,7 +76,7 @@ public abstract class Stat implements IInstance {
      * @param bypass   a flag to skip checking the components and effectively level
      *                 up directly using {@link #setLevel(int)} used in certain
      *                 situations to just upgrade immediately (i.e creative mode).
-     *                 If true, the return array will always be false;
+     *                 If true, the return array will always be true;
      * @return A array of boolean values indicating the components that either were
      *         satisfied (true) or were not so (false)
      */
@@ -87,7 +87,8 @@ public abstract class Stat implements IInstance {
 
         if (bypass) {
             this.setLevel(this.level + 1);
-            Arrays.fill(passing, false);
+            Arrays.fill(passing, true);
+            return new PurchaseResult(passing, true, purchase, bypass, newLevel);
         } else {
             // Effectively, the flag logic here is that once any particular component can't
             // purchase, it goes false.
@@ -110,56 +111,81 @@ public abstract class Stat implements IInstance {
                 this.setLevel(this.level + 1);
             }
 
-            return new PurchaseResult(passing, flag, purchase, newLevel);
+            return new PurchaseResult(passing, flag, purchase, bypass, newLevel);
         }
-
-        return new PurchaseResult(passing, false, purchase, newLevel);
     }
 
     public static class PurchaseResult {
 
+        /**
+         * A simple enum that gives a reason for the result. 
+         */
+        public static enum Reason {
+            FREEPURCHASE((byte) 0), //used under any circumstance that grants the ability to freely purchase.
+            PAID((byte) 1), //normal conditions where the stat is paid for, nothing special.
+            FAIL((byte) 2), //normal conditions where the stat is unable to be paid for, nothing special.
+            CHECK_PAID((byte) 3), //normal conditions where the stat is not paid to test the players ability to pay.
+            CHECK_FAIL((byte) 4);
+        
+            public final byte value;
+            private Reason(byte value){
+                this.value = value;
+            }
+
+            public static Reason getFromValue(byte value){
+                switch(value){
+                    case (byte) 0: return FREEPURCHASE;
+                    case (byte) 1: return PAID;
+                    case (byte) 2: return FAIL;
+                    case (byte) 3: return CHECK_PAID;
+                    case (byte) 4: return CHECK_FAIL;
+                    default: return CHECK_FAIL;
+                }
+            }
+        }
+
+        private Reason reason;
         private boolean[] componentsPassing;
-        private boolean passed;
-        private boolean purchased;
         private int newLevel;
 
         public boolean[] getComponentsPassing() {
             return this.componentsPassing;
         }
 
-
-        public boolean isPassed() {
-            return this.passed;
-        }
-
-        public boolean isPurchased(){
-            return this.purchased;
-        }
-
         public int getNewLevel() {
             return this.newLevel;
         }
 
-        public PurchaseResult(boolean[] componentsPassing, boolean passed, boolean purchased, int newLevel) {
+        public Reason getReason(){
+            return this.reason;
+        }
+
+        public PurchaseResult(boolean[] componentsPassing, boolean passed, boolean purchased, boolean bypass, int newLevel) {
             this.componentsPassing = componentsPassing;
-            this.passed = passed;
-            this.purchased = purchased;
             this.newLevel = newLevel;
+
+            if(purchased && passed){
+                this.reason = Reason.PAID;
+            }else if(purchased && !passed){
+                this.reason = Reason.FAIL;
+            }else if(!purchased && passed){
+                this.reason = Reason.CHECK_PAID;
+            }else if(!purchased && !passed){
+                this.reason = Reason.CHECK_FAIL;
+            }
         }
 
         public PurchaseResult() {}
 
         public void serialize(PacketBuffer buff){
             buff.writeInt(this.newLevel);
-            buff.writeBoolean(this.passed);
-            buff.writeBoolean(this.purchased);
+            buff.writeByte(this.reason.value);
             buff.writeByteArray(convertBooleansToBytes(this.componentsPassing));
         }
 
         public void deserialize(PacketBuffer buff){
             this.newLevel = buff.readInt();
-            this.passed = buff.readBoolean();
-            this.purchased = buff.readBoolean();
+            this.reason = Reason.getFromValue(buff.readByte());
             this.componentsPassing = convertBytesToBooleans(buff.readByteArray());
         }
 
