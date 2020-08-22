@@ -14,6 +14,7 @@ import net.minecraftforge.fml.network.PacketDistributor;;
 
 @EventBusSubscriber(modid = StatsMain.MODID)
 public class ClientConnection {
+	
 
     @SubscribeEvent
     public static void onClientConnection(PlayerLoggedInEvent event){
@@ -24,7 +25,8 @@ public class ClientConnection {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
 
             //In the future, lets store the serialization for future reference and generate it on post-init or something.
-            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new SPacketDataStorageSync(CommonProxy.DATA_STORAGE.serializeNBT()));
+            SPacketDataStorageSync packet = new SPacketDataStorageSync(CommonProxy.DATA_STORAGE.serializeNBT());
+            CommonProxy.NETWORK_HANDLER.getChannel().send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), packet);
         }
     }
     

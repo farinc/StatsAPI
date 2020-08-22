@@ -13,26 +13,31 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkHandler {
-
+	
     //Default stuff
     private static final String PROTOCOL_VERSION = "1";
     
     private static int id = 0;
     
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(StatsMain.MODID, "main"), () -> PROTOCOL_VERSION,
-        PROTOCOL_VERSION::equals,
-        PROTOCOL_VERSION::equals
-    );
-
-    private static <P> void register(Class<P> messageType, BiConsumer<P, PacketBuffer> encoder, Function<PacketBuffer, P> decoder, BiConsumer<P, Supplier<Context>> messageConsumer){
-        INSTANCE.registerMessage(id++, messageType, encoder, decoder, messageConsumer);
+    private SimpleChannel channel;
+    
+    public void registerChannel() {
+    	channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(StatsMain.MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
     }
 
-    public static void registerPackets(){
+    public void registerPackets(){
         register(SPacketDataStorageSync.class, SPacketDataStorageSync::encode, SPacketDataStorageSync::decode, SPacketDataStorageSync::handle);
         register(SPacketUpgradeStat.class, SPacketUpgradeStat::encode, SPacketUpgradeStat::decode, SPacketUpgradeStat::handle);
         register(SPacketUpgradeStatReply.class, SPacketUpgradeStatReply::encode, SPacketUpgradeStatReply::decode, SPacketUpgradeStatReply::handle);
     }
+    
+    private <P> void register(Class<P> messageType, BiConsumer<P, PacketBuffer> encoder, Function<PacketBuffer, P> decoder, BiConsumer<P, Supplier<Context>> messageConsumer){
+        channel.registerMessage(id++, messageType, encoder, decoder, messageConsumer);
+    }
+
+	public SimpleChannel getChannel() {
+		return channel;
+	}
 
 
 }

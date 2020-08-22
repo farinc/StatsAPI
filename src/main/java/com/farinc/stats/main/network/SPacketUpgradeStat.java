@@ -66,7 +66,7 @@ public class SPacketUpgradeStat {
                 PurchaseResult result = stat.purchaseStat(player, packet.purchase, false);
 
                 //send reply packet...
-                NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SPacketUpgradeStatReply(packet.statID, isNew, result));
+                CommonProxy.NETWORK_HANDLER.getChannel().send(PacketDistributor.PLAYER.with(() -> player), new SPacketUpgradeStatReply(packet.statID, isNew, result));
             });
         });
         context.setPacketHandled(true);

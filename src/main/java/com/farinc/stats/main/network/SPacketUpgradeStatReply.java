@@ -62,7 +62,11 @@ public class SPacketUpgradeStatReply {
             player.getCapability(PlayerStatCapability.STAT_CAPABILITY).ifPresent((IStatHolder holder) -> {
                 Reason reason = result.getReason();
 
-                //If the reason was that the stat was paid or is free, then add the stat or upgrade the stat.
+                /*
+                 * If the reason was that the stat was paid or is free, then add the stat or upgrade the stat on client side.
+                 * Recall that on client side we just need to store a reference of what the player owns for gui lookup, so 
+                 * that we are not tailing behind the client if we constantly are sending packets (and quite unnecessary)
+                 */
                 if(reason == Reason.PAID || reason == Reason.FREEPURCHASE) {
                     Stat stat;
                     if(packet.isNew){
